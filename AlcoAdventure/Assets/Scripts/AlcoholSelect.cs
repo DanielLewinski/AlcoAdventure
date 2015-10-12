@@ -25,7 +25,6 @@ public class AlcoholSelect : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        
     }
 	
 	// Update is called once per frame
@@ -34,6 +33,9 @@ public class AlcoholSelect : MonoBehaviour {
         string message = Drinker.UpdateStatus();
         if (message != "")
             print(message);
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+            Application.Quit();
     }
 
     //checking resolution in real time
@@ -47,12 +49,6 @@ public class AlcoholSelect : MonoBehaviour {
 
     void OnGUI()
     {
-        //enum alkohol choice
-
-
-        
-
-
         //Alcohol MENU
         if (GUI.Button(new Rect(BREAKEWIDTH, BREAKEHEIGHT, BUTTONWIDTH, BUTTONHEIGHT), alcoholTextures[0]))
         {

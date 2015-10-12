@@ -42,6 +42,8 @@ public class VolumeSelect : MonoBehaviour {
 
     //information from AlcoholSelect about kind of alcohol
     public static int alcoholSelected;
+    public static float amount;
+
 
     public float BUTTONWIDTH = Screen.width / 5;
     public float BUTTONHEIGHT = Screen.height / 4;
@@ -63,10 +65,14 @@ public class VolumeSelect : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        CheckResolution();
         string message = Drinker.UpdateStatus();
         if (message != "")
             print(message);
-	}
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+            Application.Quit();
+    }
 
     void CreateShot()
     {
@@ -79,6 +85,7 @@ public class VolumeSelect : MonoBehaviour {
             shot.Amount.Add(1000);
 
             shot.Power = 5;
+         //   power = 5;
         }
         else if(alcoholSelected == 1 || alcoholSelected == 2)
         {
@@ -88,6 +95,7 @@ public class VolumeSelect : MonoBehaviour {
             shot.Amount.Add(500/2);
             shot.Amount.Add(1000/2);
 
+           // power = 12;
             shot.Power = 12;
         }else
         {
@@ -100,14 +108,17 @@ public class VolumeSelect : MonoBehaviour {
             if(alcoholSelected == 3)
             {
                 shot.Power = 40;
+             //   power = 40;
             }
             else if(alcoholSelected == 4)
             {
                 shot.Power = 95;
+               // power = 95
             }
             else
             {
                 shot.Power = 92;
+            //    power = 92;
             }
         }
     }
@@ -122,27 +133,61 @@ public class VolumeSelect : MonoBehaviour {
 
     void OnGUI()
     {
+        //variable about kind of amount texture
+        int textureCategory;
+        if (alcoholSelected==0)
+        {
+            textureCategory = 0;
+            amount = 0;
+        }
+        else if(alcoholSelected == 1 || alcoholSelected == 2)
+        {
+            textureCategory = 1;
+            amount = 1;
+        }
+        else
+        {
+            textureCategory = 2;
+            amount = 2;
+        }
+
 
         //Alcohol selection
-        if (GUI.Button(new Rect(BREAKEWIDTH, BREAKEHEIGHT, BUTTONWIDTH, BUTTONHEIGHT), "small"))
+        if (GUI.Button(new Rect(BREAKEWIDTH, BREAKEHEIGHT, BUTTONWIDTH, BUTTONHEIGHT), amountTextures[textureCategory * 3]))
         {
             ///Calculating mass of alkohol
-            alcoholMass = 0.798f * shot.Amount[0] * (shot.Power/100);
+            alcoholMass = 0.798f * shot.Amount[0] * (shot.Power / 100);
+
             print(Drinker.Drink(alcoholMass));
+            print(textureCategory * 3);
+            Stats.alcoholMass = alcoholMass;
+            Application.LoadLevel("Stats");
+            
         }
-        if (GUI.Button(new Rect(2 * BREAKEWIDTH + BUTTONWIDTH, BREAKEHEIGHT, BUTTONWIDTH, BUTTONHEIGHT), "medium"))
+            
+
+        if (GUI.Button(new Rect(2 * BREAKEWIDTH + BUTTONWIDTH, BREAKEHEIGHT, BUTTONWIDTH, BUTTONHEIGHT), amountTextures[textureCategory * 3 + 1]))
         {
             alcoholMass = 0.798f * shot.Amount[1] * (shot.Power / 100);
-			print(Drinker.Drink(alcoholMass));
-		}
-        if (GUI.Button(new Rect(3 * BREAKEWIDTH + 2 * BUTTONWIDTH, BREAKEHEIGHT, BUTTONWIDTH, BUTTONHEIGHT), "high"))
-        {
+            print (Drinker.Drink(alcoholMass));
+            Stats.alcoholMass = alcoholMass;
+            Application.LoadLevel("Stats");
+        }
+        if (GUI.Button(new Rect(3 * BREAKEWIDTH + 2 * BUTTONWIDTH, BREAKEHEIGHT, BUTTONWIDTH, BUTTONHEIGHT), amountTextures[textureCategory * 3 + 2]))
+
+        { 
+
+
+        
             alcoholMass = 0.798f * shot.Amount[2] * (shot.Power / 100);
 			print(Drinker.Drink(alcoholMass));
-		}
+            Stats.alcoholMass = alcoholMass;
+            Application.LoadLevel("Stats");
+            
+        }
         if (GUI.Button(new Rect(BREAKEWIDTH, 3 * BREAKEHEIGHT + 2 * BUTTONHEIGHT, 3 * BUTTONWIDTH + 2 * BREAKEWIDTH, BUTTONHEIGHT / 2), "Back"))
         {
-            Application.LoadLevel("AlcoholSelect");
+            Application.LoadLevel("Stats");
         }
     }
 }

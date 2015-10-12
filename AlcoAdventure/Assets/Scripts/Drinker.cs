@@ -18,12 +18,12 @@ public class Drinker//: //MonoBehaviour
 	const float MAX_ALCOHOL_ELIMINATION = 10;
 	static float alcoholDrunk = 0;
 	static float alcoholAbsorbed = 0;
-	static float promils;
+//	static float promils;
 	static int absorptionTime; //in minutes
 	static int absorptionProgress = 0;
 	static float bmi;
 
-	static DateTime soberingTime;
+	public static DateTime soberingTime;
 
 	static float timePassed = 0;
 	
