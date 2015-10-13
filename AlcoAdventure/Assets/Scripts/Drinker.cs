@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
 public class Drinker//: //MonoBehaviour
 {
@@ -18,36 +19,48 @@ public class Drinker//: //MonoBehaviour
 	const float MAX_ALCOHOL_ELIMINATION = 10;
 	static float alcoholDrunk = 0;
 	static float alcoholAbsorbed = 0;
-//	static float promils;
 	static int absorptionTime; //in minutes
 	static int absorptionProgress = 0;
 	static float bmi;
 
 	public static DateTime soberingTime;
+	public static DateTime startTime;
+	public static Dictionary<DateTime, float> alcoholFunction = new Dictionary<DateTime, float>();
 
 	static float timePassed = 0;
 	
 
 	static void SimulateSobering()
 	{
-		float hourDivider = 2;
-
 		float alcoholDrunkCopy = alcoholDrunk;
 		float alcoholAbsorbedCopy = alcoholAbsorbed;
 		int absorptioProgressCopy = absorptionProgress;
 
-		double counter = 0; //each point is 30 minutes
-		do
+		startTime = DateTime.Now;
+		alcoholFunction.Clear();
+
+		double counter = 0;
+
+		for( int i = 0; i < absorptionTime; ++i)
 		{
-			for(int i = 0; i < 60/hourDivider; ++i)
-				AbsorbAlcohol();
-			EliminateAlcohol(hourDivider);
+			AbsorbAlcohol();
+			EliminateAlcohol();
+			alcoholFunction[startTime.AddMinutes(counter)] = CalculatePromils();
 			++counter;
 		}
-		while (CalculatePromils() > 0.2);
 
+		if (CalculatePromils() <= 0.2)
+			counter = 0; //if you will never get drunk
 
-		soberingTime = DateTime.Now.AddHours(counter/hourDivider);
+		while(CalculatePromils() > 0.2)
+		{
+			AbsorbAlcohol();
+			EliminateAlcohol();
+			alcoholFunction[startTime.AddMinutes(counter)] = CalculatePromils();
+			++counter;
+		}
+
+		soberingTime = startTime.AddMinutes(counter);
 
 		alcoholAbsorbed = alcoholAbsorbedCopy;
 		alcoholDrunk = alcoholDrunkCopy;
@@ -77,7 +90,7 @@ public class Drinker//: //MonoBehaviour
 	{
 		string message = "";
 		timePassed += Time.deltaTime;
-		if (timePassed >= 1)
+		if (timePassed >= 60)
 		{
 			timePassed = 0;
 			if (alcoholDrunk > 0)
@@ -114,9 +127,9 @@ public class Drinker//: //MonoBehaviour
 	{
 		float multiplier;
 		if (isMale)
-			multiplier = 0.7f;
+			multiplier = 0.68f;
 		else
-			multiplier = 0.6f;
+			multiplier = 0.55f;
 
 		float overweight = CalculateOverweight();
 		float liquidExcess = 0.15f * overweight;
@@ -166,7 +179,7 @@ public class Drinker//: //MonoBehaviour
 		absorptionProgress = 0;
 
 		SimulateSobering();
-		return "Sober by: " + soberingTime;
+		return alcoholFunction[soberingTime.AddMinutes(-1)].ToString();  //"Sober by: " + soberingTime;
 	}
 
 }
