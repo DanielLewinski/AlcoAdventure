@@ -1,3 +1,3 @@
 # AlcoAdventure
-Your best drinking buddy
-Repo Mikolaja
+Your best drinking buddy.
+Authors: Daniel Lewiński and Mikołaj Ciesielski
